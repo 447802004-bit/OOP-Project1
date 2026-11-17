@@ -36,7 +36,6 @@ public static void main(String[] args) {
                 case 3:
                 case 4:
                 case 5:
-                    // Other team members will add these operations.
                     System.out.println("Option not connected yet.");
                     break;
 
