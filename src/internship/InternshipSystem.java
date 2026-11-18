@@ -44,7 +44,7 @@ public static void main(String[] args) {
                 case 4:findMatchingCenters(); // Call method to find matching training centers
                 break;
                
-                case 5:ssignInternship(); // Call method to assign internship and manage seats
+                case 5:assignInternship(); // Call method to assign internship and manage seats
                 break;
                    
                 case 6:
@@ -69,15 +69,6 @@ public static void main(String[] args) {
         }
     }
 }
-
-
-private static void ssignInternship() {
-	// TODO Auto-generated method stub
-	
-}
-
-
-// Add the five training centers
 static void addCenters() {
 
     centers.add(new TrainingCenter(
