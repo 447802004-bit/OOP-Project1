@@ -165,6 +165,10 @@ public static Student findStudent(String id) {
 	private static void registerCourses() {
 	System.out.print("Enter KKU ID: ");
 	String id = input.nextLine().trim();
+	if (!id.matches("^4\\d{8}$")) {
+		System.out.println("Invalid KKU ID. The ID must contain 9 digits and start with 4.");
+		return;
+	}
 	Student student = findStudent(id);
 	if (student == null) {
 	System.out.println("Student not found.");
@@ -200,6 +204,10 @@ public static Student findStudent(String id) {
 	private static void registerProject() {
 	System.out.print("Enter KKU ID: ");
 	String id = input.nextLine().trim();
+	if (!id.matches("^4\\d{8}$")) {
+		System.out.println("Invalid KKU ID. The ID must contain 9 digits and start with 4.");
+		return;
+	}
 	Student student = findStudent(id);
 	if (student == null) {
 	System.out.println("Student not found.");
@@ -215,7 +223,19 @@ public static Student findStudent(String id) {
 
 	System.out.print("Enter Field: ");
 	String field = input.nextLine().trim();
-
+	String[] allowedFields = {"Software Development", "Artificial Intelligence", "Cybersecurity", "Data Science", "Networking"};
+	String validField = null;
+	for (String f : allowedFields) {
+		if (f.equalsIgnoreCase(field)) {
+			validField = f;
+			break;
+		}
+	}
+	if (validField == null) {
+		System.out.println("Invalid field. Choose from: Software Development, Artificial Intelligence, Cybersecurity, Data Science, Networking.");
+		return;
+	}
+	field = validField;
 	student.setProject(title, field);
 	System.out.println("Graduation project registered successfully.");
 	}
@@ -224,6 +244,10 @@ public static Student findStudent(String id) {
 	private static void findMatchingCenters() {
 	System.out.print("Enter KKU ID: ");
 	String id = input.nextLine().trim();
+	if (!id.matches("^4\\d{8}$")) {
+		System.out.println("Invalid KKU ID. The ID must contain 9 digits and start with 4.");
+		return;
+	}
 	Student student = findStudent(id);
 	if (student == null) {
 	System.out.println("Student not found.");
@@ -254,6 +278,10 @@ public static Student findStudent(String id) {
 	private static void assignInternship() {
 	System.out.print("Enter KKU ID: ");
 	String id = input.nextLine().trim();
+	if (!id.matches("^4\\d{8}$")) {
+		System.out.println("Invalid KKU ID. The ID must contain 9 digits and start with 4.");
+		return;
+	}
 	Student student = findStudent(id);
 	if (student == null) {
 	System.out.println("Student not found.");
@@ -267,29 +295,30 @@ public static Student findStudent(String id) {
         System.out.println("No graduation project has been registered for this student. Please register the graduation project first.");
         return;
     }
-	if (student.hasInternship()) {
-	System.out.println("This student is already assigned to a training center.");
-
-	
-	return;
+    if (student.hasInternship()) {
+		System.out.println("This student is already assigned to " + student.getInternship().getName() + ".");
+		return;
 	}
 
 	TrainingCenter bestCenter = null;
 	int maxScore = -1;
 	for (TrainingCenter tc : centers) {
-	int score = tc.calculateScore(student);
-	if (score > maxScore) {
-	maxScore = score;
-	bestCenter = tc;
-	}
+		if (tc.hasSeats()) {
+			int score = tc.calculateScore(student);
+			if (score > maxScore) {
+				maxScore = score;
+				bestCenter = tc;
+			}
+		}
 	}
 
-	if (bestCenter != null && bestCenter.hasSeats()) {
-	bestCenter.takeSeat();
-	student.setInternship(bestCenter);
-	System.out.println("Internship assigned successfully to " + bestCenter.getName() + " with score " + maxScore + "%");
+	if (bestCenter != null) {
+		bestCenter.takeSeat();
+		student.setInternship(bestCenter);
+		System.out.println("Internship assigned successfully.");
+		System.out.println("Center: " + bestCenter.getName() + ", City: " + bestCenter.getCity() + ", Score: " + maxScore + "%");
 	} else {
-	System.out.println("Assignment failed. No available seats in the best matching training center.");
+		System.out.println("Assignment failed. No available seats in any training center.");
 	}
 	}
 	
