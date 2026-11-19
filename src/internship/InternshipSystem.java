@@ -29,7 +29,7 @@ public static void main(String[] args) {
         System.out.print("Enter your choice: ");
 
         try {
-            choice = Integer.parseInt(input.nextLine());
+            choice = Integer.parseInt(input.nextLine().trim());
 
             switch (choice) {
                 case 1:addNewStudent(); // Call method to add a new student
@@ -101,7 +101,25 @@ static void addCenters() {
         new String[]{"Computer Networks", "Operating Systems",
             "Network Security"}, 2));
 }
+private static String toTitleCase(String text) {
+    if (text == null || text.trim().isEmpty()) return text;
+    String res = "";
+    for (String w : text.trim().split("\\s+"))
+        res += Character.toUpperCase(w.charAt(0)) + w.substring(1).toLowerCase() + " ";
+    return res.trim();
+}
 
+public static TrainingCenter getBestMatch(Student student) {
+    TrainingCenter best = null;
+    int max = -1;
+    for (TrainingCenter tc : centers) {
+        if (tc.calculateScore(student) > max) {
+            max = tc.calculateScore(student);
+            best = tc;
+        }
+    }
+    return best;
+}
 // Find a student using KKU ID
 public static Student findStudent(String id) {
 
@@ -119,7 +137,7 @@ public static Student findStudent(String id) {
 	return;
 	}
 	System.out.print("Enter Name: ");
-	String name = input.nextLine().trim();
+	String name = toTitleCase(input.nextLine().trim());
 	if (name.length() < 2) {
 	System.out.println("Invalid Name. Must be at least 2 characters.");
 	return;
@@ -137,7 +155,7 @@ public static Student findStudent(String id) {
 	}
 
 	System.out.print("Enter Major: ");
-	String major = input.nextLine().trim();
+	String major = toTitleCase(input.nextLine().trim());
 
 	students.add(new Student(name, id, major));
 	System.out.println("Student added successfully.");
@@ -211,7 +229,14 @@ public static Student findStudent(String id) {
 	System.out.println("Student not found.");
 	return;
 	}
-
+	if (student.getCourses().isEmpty()) {
+        System.out.println("No courses have been registered for this student. Please register courses first.");
+        return;
+    }
+    if (student.getProjectTitle() == null || student.getProjectTitle().isEmpty()) {
+        System.out.println("No graduation project has been registered for this student. Please register the graduation project first.");
+        return;
+    }
 	System.out.println("===== MATCHING TRAINING CENTERS =====");
 	System.out.printf("%-25s | %-15s | %-25s | %-5s%n", "Center", "City", "Field", "Score");
 	System.out.println("----------------------------------------------------------------------------------");
@@ -220,8 +245,11 @@ public static Student findStudent(String id) {
 	int score = tc.calculateScore(student);
 	System.out.printf("%-25s | %-15s | %-25s | %d%%%n", tc.getName(), tc.getCity(), tc.getField(), score);
 	}
+	TrainingCenter best = getBestMatch(student);
+    if (best != null) {
+        System.out.println("Best Match: " + best.getName() + " (" + best.calculateScore(student) + "%)");
+    }
 	}
-
 	// Option 5: Assign Internship
 	private static void assignInternship() {
 	System.out.print("Enter KKU ID: ");
@@ -231,7 +259,14 @@ public static Student findStudent(String id) {
 	System.out.println("Student not found.");
 	return;
 	}
-
+	if (student.getCourses().isEmpty()) {
+        System.out.println("No courses have been registered for this student. Please register courses first.");
+        return;
+	}
+    if (student.getProjectTitle() == null || student.getProjectTitle().isEmpty()) {
+        System.out.println("No graduation project has been registered for this student. Please register the graduation project first.");
+        return;
+    }
 	if (student.hasInternship()) {
 	System.out.println("This student is already assigned to a training center.");
 
